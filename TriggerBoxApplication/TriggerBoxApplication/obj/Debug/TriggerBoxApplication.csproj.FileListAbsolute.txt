@@ -1,0 +1,10 @@
+D:\VS_repos\TriggerBoxApplication\TriggerBoxApplication\bin\Debug\TriggerBoxApplication.exe.config
+D:\VS_repos\TriggerBoxApplication\TriggerBoxApplication\bin\Debug\TriggerBoxApplication.exe
+D:\VS_repos\TriggerBoxApplication\TriggerBoxApplication\bin\Debug\TriggerBoxApplication.pdb
+D:\VS_repos\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.csprojAssemblyReference.cache
+D:\VS_repos\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.Form1.resources
+D:\VS_repos\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.Properties.Resources.resources
+D:\VS_repos\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.csproj.GenerateResource.cache
+D:\VS_repos\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.csproj.CoreCompileInputs.cache
+D:\VS_repos\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.exe
+D:\VS_repos\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.pdb
