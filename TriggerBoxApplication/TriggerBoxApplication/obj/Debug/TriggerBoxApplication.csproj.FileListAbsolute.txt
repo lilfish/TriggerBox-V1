@@ -8,3 +8,13 @@ D:\VS_repos\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxAppl
 D:\VS_repos\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.csproj.CoreCompileInputs.cache
 D:\VS_repos\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.exe
 D:\VS_repos\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.pdb
+D:\git_repos\triggerbox-v1\TriggerBoxApplication\TriggerBoxApplication\bin\Debug\TriggerBoxApplication.exe.config
+D:\git_repos\triggerbox-v1\TriggerBoxApplication\TriggerBoxApplication\bin\Debug\TriggerBoxApplication.exe
+D:\git_repos\triggerbox-v1\TriggerBoxApplication\TriggerBoxApplication\bin\Debug\TriggerBoxApplication.pdb
+D:\git_repos\triggerbox-v1\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.csprojAssemblyReference.cache
+D:\git_repos\triggerbox-v1\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.Form1.resources
+D:\git_repos\triggerbox-v1\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.Properties.Resources.resources
+D:\git_repos\triggerbox-v1\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.csproj.GenerateResource.cache
+D:\git_repos\triggerbox-v1\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.csproj.CoreCompileInputs.cache
+D:\git_repos\triggerbox-v1\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.exe
+D:\git_repos\triggerbox-v1\TriggerBoxApplication\TriggerBoxApplication\obj\Debug\TriggerBoxApplication.pdb

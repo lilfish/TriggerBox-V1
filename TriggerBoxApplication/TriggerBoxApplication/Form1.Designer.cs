@@ -30,6 +30,11 @@ namespace TriggerBoxApplication
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
             this.label27 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.MotorAccelF = new System.Windows.Forms.TextBox();
@@ -53,10 +58,16 @@ namespace TriggerBoxApplication
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.PWMvalF = new System.Windows.Forms.TextBox();
+            this.PWMvalE = new System.Windows.Forms.TextBox();
             this.label22 = new System.Windows.Forms.Label();
+            this.PWMvalD = new System.Windows.Forms.TextBox();
             this.label23 = new System.Windows.Forms.Label();
+            this.PWMvalC = new System.Windows.Forms.TextBox();
             this.PWMDurationF = new System.Windows.Forms.TextBox();
+            this.PWMvalB = new System.Windows.Forms.TextBox();
             this.PWMDurationE = new System.Windows.Forms.TextBox();
+            this.PWMvalA = new System.Windows.Forms.TextBox();
             this.PWMDurationD = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.PWMDurationC = new System.Windows.Forms.TextBox();
@@ -95,18 +106,8 @@ namespace TriggerBoxApplication
             this.statusLabel = new System.Windows.Forms.Label();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.programBlocks = new System.Windows.Forms.GroupBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.PWMvalF = new System.Windows.Forms.TextBox();
-            this.PWMvalE = new System.Windows.Forms.TextBox();
-            this.PWMvalD = new System.Windows.Forms.TextBox();
-            this.PWMvalC = new System.Windows.Forms.TextBox();
-            this.PWMvalB = new System.Windows.Forms.TextBox();
-            this.PWMvalA = new System.Windows.Forms.TextBox();
             this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -147,6 +148,41 @@ namespace TriggerBoxApplication
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Motors";
+            // 
+            // textBox6
+            // 
+            this.textBox6.Location = new System.Drawing.Point(238, 180);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(100, 20);
+            this.textBox6.TabIndex = 32;
+            // 
+            // textBox5
+            // 
+            this.textBox5.Location = new System.Drawing.Point(238, 153);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.Size = new System.Drawing.Size(100, 20);
+            this.textBox5.TabIndex = 31;
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(238, 127);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(100, 20);
+            this.textBox4.TabIndex = 30;
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(238, 100);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(100, 20);
+            this.textBox3.TabIndex = 29;
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(238, 72);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(100, 20);
+            this.textBox2.TabIndex = 28;
             // 
             // label27
             // 
@@ -354,6 +390,20 @@ namespace TriggerBoxApplication
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "PWM";
             // 
+            // PWMvalF
+            // 
+            this.PWMvalF.Location = new System.Drawing.Point(24, 181);
+            this.PWMvalF.Name = "PWMvalF";
+            this.PWMvalF.Size = new System.Drawing.Size(100, 20);
+            this.PWMvalF.TabIndex = 38;
+            // 
+            // PWMvalE
+            // 
+            this.PWMvalE.Location = new System.Drawing.Point(24, 154);
+            this.PWMvalE.Name = "PWMvalE";
+            this.PWMvalE.Size = new System.Drawing.Size(100, 20);
+            this.PWMvalE.TabIndex = 37;
+            // 
             // label22
             // 
             this.label22.AutoSize = true;
@@ -362,6 +412,13 @@ namespace TriggerBoxApplication
             this.label22.Size = new System.Drawing.Size(41, 13);
             this.label22.TabIndex = 21;
             this.label22.Text = "Duratie";
+            // 
+            // PWMvalD
+            // 
+            this.PWMvalD.Location = new System.Drawing.Point(24, 126);
+            this.PWMvalD.Name = "PWMvalD";
+            this.PWMvalD.Size = new System.Drawing.Size(100, 20);
+            this.PWMvalD.TabIndex = 36;
             // 
             // label23
             // 
@@ -372,6 +429,13 @@ namespace TriggerBoxApplication
             this.label23.TabIndex = 20;
             this.label23.Text = "Sterkte in %";
             // 
+            // PWMvalC
+            // 
+            this.PWMvalC.Location = new System.Drawing.Point(24, 100);
+            this.PWMvalC.Name = "PWMvalC";
+            this.PWMvalC.Size = new System.Drawing.Size(100, 20);
+            this.PWMvalC.TabIndex = 35;
+            // 
             // PWMDurationF
             // 
             this.PWMDurationF.Enabled = false;
@@ -380,6 +444,13 @@ namespace TriggerBoxApplication
             this.PWMDurationF.Size = new System.Drawing.Size(100, 20);
             this.PWMDurationF.TabIndex = 23;
             // 
+            // PWMvalB
+            // 
+            this.PWMvalB.Location = new System.Drawing.Point(24, 72);
+            this.PWMvalB.Name = "PWMvalB";
+            this.PWMvalB.Size = new System.Drawing.Size(100, 20);
+            this.PWMvalB.TabIndex = 34;
+            // 
             // PWMDurationE
             // 
             this.PWMDurationE.Enabled = false;
@@ -387,6 +458,13 @@ namespace TriggerBoxApplication
             this.PWMDurationE.Name = "PWMDurationE";
             this.PWMDurationE.Size = new System.Drawing.Size(100, 20);
             this.PWMDurationE.TabIndex = 22;
+            // 
+            // PWMvalA
+            // 
+            this.PWMvalA.Location = new System.Drawing.Point(24, 46);
+            this.PWMvalA.Name = "PWMvalA";
+            this.PWMvalA.Size = new System.Drawing.Size(100, 20);
+            this.PWMvalA.TabIndex = 33;
             // 
             // PWMDurationD
             // 
@@ -736,83 +814,6 @@ namespace TriggerBoxApplication
             this.programBlocks.TabStop = false;
             this.programBlocks.Text = "Programma blokken";
             // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(238, 72);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 28;
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(238, 100);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(100, 20);
-            this.textBox3.TabIndex = 29;
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(238, 127);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(100, 20);
-            this.textBox4.TabIndex = 30;
-            // 
-            // textBox5
-            // 
-            this.textBox5.Location = new System.Drawing.Point(238, 153);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(100, 20);
-            this.textBox5.TabIndex = 31;
-            // 
-            // textBox6
-            // 
-            this.textBox6.Location = new System.Drawing.Point(238, 180);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(100, 20);
-            this.textBox6.TabIndex = 32;
-            // 
-            // PWMvalF
-            // 
-            this.PWMvalF.Location = new System.Drawing.Point(24, 181);
-            this.PWMvalF.Name = "PWMvalF";
-            this.PWMvalF.Size = new System.Drawing.Size(100, 20);
-            this.PWMvalF.TabIndex = 38;
-            // 
-            // PWMvalE
-            // 
-            this.PWMvalE.Location = new System.Drawing.Point(24, 154);
-            this.PWMvalE.Name = "PWMvalE";
-            this.PWMvalE.Size = new System.Drawing.Size(100, 20);
-            this.PWMvalE.TabIndex = 37;
-            // 
-            // PWMvalD
-            // 
-            this.PWMvalD.Location = new System.Drawing.Point(24, 126);
-            this.PWMvalD.Name = "PWMvalD";
-            this.PWMvalD.Size = new System.Drawing.Size(100, 20);
-            this.PWMvalD.TabIndex = 36;
-            // 
-            // PWMvalC
-            // 
-            this.PWMvalC.Location = new System.Drawing.Point(24, 100);
-            this.PWMvalC.Name = "PWMvalC";
-            this.PWMvalC.Size = new System.Drawing.Size(100, 20);
-            this.PWMvalC.TabIndex = 35;
-            // 
-            // PWMvalB
-            // 
-            this.PWMvalB.Location = new System.Drawing.Point(24, 72);
-            this.PWMvalB.Name = "PWMvalB";
-            this.PWMvalB.Size = new System.Drawing.Size(100, 20);
-            this.PWMvalB.TabIndex = 34;
-            // 
-            // PWMvalA
-            // 
-            this.PWMvalA.Location = new System.Drawing.Point(24, 46);
-            this.PWMvalA.Name = "PWMvalA";
-            this.PWMvalA.Size = new System.Drawing.Size(100, 20);
-            this.PWMvalA.TabIndex = 33;
-            // 
             // dateTimePicker1
             // 
             this.dateTimePicker1.CustomFormat = "HH:MM:SS";
@@ -823,11 +824,22 @@ namespace TriggerBoxApplication
             this.dateTimePicker1.TabIndex = 0;
             this.dateTimePicker1.Value = new System.DateTime(2020, 12, 28, 0, 0, 0, 0);
             // 
+            // button1
+            // 
+            this.button1.Enabled = false;
+            this.button1.Location = new System.Drawing.Point(639, 276);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "Updaten";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(932, 500);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.programBlocks);
             this.Controls.Add(this.progressBar);
@@ -932,6 +944,7 @@ namespace TriggerBoxApplication
         private System.Windows.Forms.TextBox PWMvalB;
         private System.Windows.Forms.TextBox PWMvalA;
         private System.Windows.Forms.DateTimePicker dateTimePicker1;
+        private System.Windows.Forms.Button button1;
     }
 }
 
