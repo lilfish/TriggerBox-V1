@@ -9,12 +9,12 @@
 #include "StepperClass.h"
 
 //Buttons
-#define restart_button 53
-#define reset_button 52
+#define RESTART_BUTTON 53
+#define RESET_BUTTON 52
 #define PAUZE_BUTTON 51
 #define CONTINUE_BUTTON 50
-Button restart_button(restart_button);
-Button reset_button(reset_button);
+Button restart_button(RESTART_BUTTON);
+Button reset_button(RESET_BUTTON);
 Button pauze_button(PAUZE_BUTTON);
 Button continue_button(CONTINUE_BUTTON);
 
@@ -47,6 +47,11 @@ Oled oledd;
 long previousMillis = 0;
 long screen_interval = 2000;
 boolean clear_screen = false;
+
+// recieving data
+const byte numChars = 32;
+char receivedChars[numChars];
+boolean newData = false;
 
 String incomingString; // for incoming serial data
 
@@ -110,13 +115,6 @@ void setup()
     oledd.displayText(0, 1, "active");
     previousMillis = millis();
     clear_screen = true;
-
-//    Tasks.add("test", [] {
-//        Serial.println("Hello, World");
-//    })->startInterval(1);                // call this function in 1[fps]
-    Tasks.add("test2", [] {
-        Serial.println("Hello, World xD");
-    })->startOnceAfter(5);                // call this function in 1[fps]
     Tasks.pause();
 }
 
@@ -197,19 +195,30 @@ void loop()
         oledd.clear();
         oledd.displayText(0, 0, "Receiving");
         oledd.displayText(0, 1, "instructions.");
-        while (Serial.available() > 0)
-        {
-            // read the incoming byte:
-            incomingString = Serial.readString();
-            // say what you got:
-            Serial.println("I received: ");
-            Serial.println(incomingString);
-            if(incomingString == "start"){
-              Tasks.start();
-            }
+      
+        static byte ndx = 0;
+        char endMarker = '\n';
+        char rc;
+       
+        while (Serial.available() > 0) {
+          rc = Serial.read();
+  
+          if (rc != endMarker) {
+              receivedChars[ndx] = rc;
+              ndx++;
+              if (ndx >= numChars) {
+                  ndx = numChars - 1;
+              }
+          }
+          else {
+              receivedChars[ndx] = '\0'; // terminate the string
+              ndx = 0;
+          }
         }
+        Serial.println(receivedChars[0]);
         previousMillis = currentMillis;
         clear_screen = true;
     }
+//    update tasks
     Tasks.update();
 }
