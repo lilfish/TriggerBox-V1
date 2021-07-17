@@ -1,4 +1,6 @@
-class Relay
+#include "ToolClass.h"
+
+class Relay : public Tool
 {
 private:
     byte pin;
@@ -37,4 +39,8 @@ public:
         return digitalRead(pin);
     }
 
+    void parseInstruction(int test)
+    {
+        Serial.println(test);
+    }
 };

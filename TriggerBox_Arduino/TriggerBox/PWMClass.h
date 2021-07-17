@@ -1,4 +1,6 @@
-class PWM
+#include "ToolClass.h"
+
+class PWM : public Tool
 {
 private:
     byte pin;
@@ -26,5 +28,10 @@ public:
     {
         return state;
     }
-    
+
+    void parseInstruction(int test)
+    {
+        Serial.println(test);
+    }
+
 };

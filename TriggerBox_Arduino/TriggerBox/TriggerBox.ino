@@ -1,12 +1,12 @@
 
-#include <Servo.h>
-#include <AccelStepper.h>
 #include <TaskManager.h>
 #include "ButtonClass.h"
 #include "OledClass.h"
 #include "PWMClass.h"
 #include "RelayClass.h"
 #include "StepperClass.h"
+#include "CustomServo.h"
+#include "ToolClass.h"
 
 //Buttons
 #define RESTART_BUTTON 53
@@ -27,19 +27,23 @@ Button continue_button(CONTINUE_BUTTON);
 
 // # Servo's
 int servo_pins[SERVOS] = {2, 3, 4, 5, 6, 7};
-Servo myservo[SERVOS];
+CustomServo *myservo[SERVOS];
 
 // # Stepper's
-int stepper_pins[STEPPERS][STEPPER_PINS] = {{15, 14}, {13, 12, 1, 1}, {11, 10}, {9, 8}, {7, 6}, {5, 4, 3, 2}};
-AccelStepper *mystepper[STEPPERS];
+int stepper_pins[STEPPERS][STEPPER_PINS] = {{A15, A14}, {A13, A12}, {A11, A10}, {A9, A8}, {A7, A6}, {A5, A4}};
+Stepper *mystepper[STEPPERS];
 
 // # Relays
-int relay_pins[RELAYS] = {3, 5, 6, 9, 10, 11};
+int relay_pins[RELAYS] = {49, 48, 47, 46 };
 Relay *myrelay[RELAYS];
 
 // # PWM same way
-int pwm_pins[PWMS] = {3, 5, 6, 1};
+int pwm_pins[PWMS] = {8, 9, 10, 11};
 PWM *mypwm[PWMS];
+
+// # All tools
+Tool *tools_array[4][6];
+
 // # Oled
 Oled oledd;
 
@@ -64,22 +68,35 @@ struct Instruction
     int val2;
     int val3;
 };
+enum TypeNumber
+{
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G
+};
+enum InstructionType
+{
+    STEPPER,
+    SERVO,
+    RELAY,
+    PWM
+};
+
 
 void setup()
 {
     Serial.begin(9600);
-    // Init servo's
-    for (int i = 0; i < SERVOS; i++)
-    {
-        myservo[i].attach(servo_pins[i]);
-    }
     // Init steppers
     for (int i = 0; i < STEPPERS; i++)
     {
         int stepper_size = 0;
         for (int y = 0; y < STEPPER_PINS; y++)
         {
-            if (stepper_pins[i][y] > 0)
+            if (stepper_pins[STEPPER][y] > 0)
             {
                 stepper_size++;
             }
@@ -87,33 +104,37 @@ void setup()
         switch (stepper_size)
         {
         case 2:
-            mystepper[i] = (AccelStepper::FULL2WIRE, stepper_pins[i][0], stepper_pins[i][1]);
-            // AccelStepper stepper3(AccelStepper::FULL2WIRE, stepper_pins[i][0], stepper_pins[i][1]);
+            mystepper[i] = new Stepper(stepper_pins[i][0], stepper_pins[i][1]);
             break;
         case 3:
-            mystepper[i] = (AccelStepper::FULL3WIRE, stepper_pins[i][0], stepper_pins[i][1], stepper_pins[i][2]);
-            // AccelStepper stepper3(AccelStepper::FULL3WIRE, stepper_pins[i][0], stepper_pins[i][1], stepper_pins[i][2]);
+            mystepper[i] = new Stepper(stepper_pins[i][0], stepper_pins[i][1], stepper_pins[i][2]);
             break;
         case 4:
-            mystepper[i] = (AccelStepper::FULL4WIRE, stepper_pins[i][0], stepper_pins[i][1], stepper_pins[i][2], stepper_pins[i][3]);
-            // AccelStepper stepper2(AccelStepper::FULL4WIRE, stepper_pins[i][0], stepper_pins[i][1], stepper_pins[i][2], stepper_pins[i][3]);
+            mystepper[i] = new Stepper(stepper_pins[i][0], stepper_pins[i][1], stepper_pins[i][2], stepper_pins[i][2]);
             break;
         default:
             // statements
             break;
         }
-
-        mystepper[i] = (1);
+        tools_array[0][i] = mystepper[i];
+    }
+    // Init servo's
+    for (int i = 0; i < SERVOS; i++)
+    {
+        myservo[i] = new CustomServo(servo_pins[i]);
+        tools_array[SERVO][i] = myservo[i];
     }
     // Init relay's
     for (int i = 0; i < RELAYS; i++)
     {
-        myrelay[i] = (i);
+        myrelay[i] = relay_pins[i];
+        tools_array[RELAY][i] = myrelay[i];
     }
     // Init pwm's
     for (int i = 0; i < PWMS; i++)
     {
-        mypwm[i] = (i);
+        mypwm[i] = pwm_pins[i];
+        tools_array[PWM][i] = mypwm[i];
     }
     // start oled scherm
     oledd.init();
@@ -262,33 +283,16 @@ void loop()
             if (rc == end_char)
             {
                 Serial.flush();
-                instruction_counter = 0;
+                break;
             }
         }
 
-        parseInstruction(new_instruction);
+        parseInstruction(new_instruction, instruction_counter);
+        instruction_counter = 0;
     }
     //    update tasks
     Tasks.update();
 }
-
-enum TypeNumber
-{
-    A,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G
-};
-enum InstructionType
-{
-    STEPPER,
-    SERVO,
-    RELAY,
-    PWM
-};
 
 int ConvertType(String input)
 {
@@ -322,7 +326,7 @@ int ConvertTypeNumber(String input)
         return G;
 }
 
-void parseInstruction(Instruction new_instruction)
+void parseInstruction(Instruction new_instruction, int instruction_counter)
 {
 
     InstructionType instruction_type = ConvertType(new_instruction.tool);
@@ -340,68 +344,45 @@ void parseInstruction(Instruction new_instruction)
     Serial.print(",");
     Serial.println(new_instruction.val3);
 
-    switch (instruction_type)
-    {
-    case STEPPER:
-        Tasks.add([new_instruction, instruction_type_number]
-                  {
-                      Serial.print("My stepper ");
-                      Serial.println(instruction_type_number);
-                      //   mystepper[instruction_type_number]
-                  })
-            ->startOnceAfter(new_instruction.start);
-        break;
-    case SERVO:
-        Tasks.add([new_instruction, instruction_type_number]
-                  {
-                      Serial.print("My servo ");
-                      Serial.println(instruction_type_number);
-                      myservo[instruction_type_number].write(new_instruction.val1);
-                  })
-            ->startOnceAfter(new_instruction.start);
-        break;
-    case RELAY:
-        if (new_instruction.val1 == 1)
-        {
-            Tasks.add([instruction_type_number]
-                      {
-                          Serial.print("My relay ");
-                          Serial.println(instruction_type_number);
-                          myrelay[instruction_type_number]->turnOn();
-                      })
-                ->startOnceAfter(new_instruction.start);
-        }
-        else if (new_instruction.val1 == 0)
-        {
-            Tasks.add([instruction_type_number]
-                      {
-                          Serial.print("My relay ");
-                          Serial.println(instruction_type_number);
-                          myrelay[instruction_type_number]->turnOff();
-                      })
-                ->startOnceAfter(new_instruction.start);
-        }
+    // intruction counter gebruiken om te weten hoeveel instructies ik moet parse met de run() functie;
 
-        break;
-    case PWM:
-        Tasks.add([new_instruction, instruction_type_number]
-                  {
-                      Serial.print("My PWM ");
-                      Serial.println(instruction_type_number);
-                      mypwm[instruction_type_number]->write(new_instruction.val1);
-                  })
-            ->startOnceAfter(new_instruction.start);
-        break;
-    default:
-        Serial.println("Unknown instruction type");
-        Serial.print(instruction_type);
-        oledd.clear();
-        oledd.displayText(0, 0, "Unkown instruction");
-        oledd.displayText(0, 1, "type:" + String(instruction_type));
-        previousMillis = millis();
-        clear_screen = true;
-        break;
-    }
+    // tools_array[instruction_type][instruction_type_number]->run();
+    // switch (instruction_type)
+    // {
+    // case STEPPER:
+    //     instruction_tool = "mystepper";
+    //     break;
+    // case SERVO:
+    //     instruction_tool = "myservo";
+    //     break;
+    // case RELAY:
+    //     instruction_tool = "myrelay";
+    //     break;
+    // case PWM:
+    //     instruction_tool = "mypwm";
+    //     break;
+    // default:
+    //     Serial.println("Unknown instruction type");
+    //     Serial.print(instruction_type);
+    //     oledd.clear();
+    //     oledd.displayText(0, 0, "Unkown instruction");
+    //     oledd.displayText(0, 1, "type:" + String(instruction_type));
+    //     previousMillis = millis();
+    //     clear_screen = true;
+    //     return;
+    // }
+    // Serial.println(tools[instruction_type].val1);
+
+    // Tasks.add([new_instruction, instruction_type_number, instruction_tool]
+    //           {
+    //               Serial.print("My PWM ");
+    //               Serial.println(instruction_type_number);
+    //               instruction_tool[instruction_type_number]->parseInstruction(new_instruction.val1);
+    //           })
+    //     ->startOnceAfter(new_instruction.start);
+    // Serial.println(new_instruction.val1);
+    // Serial.println(instruction_type_number);
+    // Serial.println(instruction_tool);
 
     Tasks.pause();
 }
