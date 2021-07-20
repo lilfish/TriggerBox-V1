@@ -35,7 +35,24 @@ public:
         this->stepper = (AccelStepper::FULL4WIRE, pin_1, pin_2, pin_3, pin_4);
     }
 
-    void parseInstruction(int test){
-        Serial.println(test);
+    // RESET
+    void reset(){
+        //
     }
+
+    // RUNNERS 
+    void run(int a)
+    {
+        Serial.println("Stepper says hi");
+    };
+
+    void run(int a, int b)
+    {
+        Serial.println("Stepper says hi");
+    };
+
+    void run(int a, int b, int c)
+    {
+        Serial.println("Stepper says hi");
+    };
 };

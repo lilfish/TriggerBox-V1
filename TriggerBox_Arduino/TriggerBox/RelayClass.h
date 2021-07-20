@@ -11,36 +11,25 @@ public:
         this->pin = pin;
         pinMode(pin, OUTPUT);
     }
-    void toggle(void)
+
+    // RESET
+    void reset()
     {
-        digitalWrite(pin, !digitalRead(pin));
+        digitalWrite(this->pin, LOW);
     }
     
-    bool turnOn()
-    {
-        if(digitalRead(pin) == LOW){
-            digitalWrite(pin, HIGH);
-            return true;
-        }
-        return false;
-    }
-
-    bool turnOff()
-    {
-        if(digitalRead(pin) == HIGH){
-            digitalWrite(pin, LOW);
-            return true;
-        }
-        return false;
-    }
-
+    // GETTERS
     void getState()
     {
-        return digitalRead(pin);
+        return digitalRead(this->pin);
     }
 
-    void parseInstruction(int test)
-    {
-        Serial.println(test);
+    // RUNNERS
+    void run() {
+        digitalWrite(this->pin, !digitalRead(this->pin));
+    }
+    
+    void run(int state) {
+        digitalWrite(this->pin, state);
     }
 };

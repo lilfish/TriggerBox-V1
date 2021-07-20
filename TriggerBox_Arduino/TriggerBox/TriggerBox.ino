@@ -5,7 +5,7 @@
 #include "PWMClass.h"
 #include "RelayClass.h"
 #include "StepperClass.h"
-#include "CustomServo.h"
+#include "CustomServoClass.h"
 #include "ToolClass.h"
 
 //Buttons
@@ -34,15 +34,17 @@ int stepper_pins[STEPPERS][STEPPER_PINS] = {{A15, A14}, {A13, A12}, {A11, A10}, 
 Stepper *mystepper[STEPPERS];
 
 // # Relays
-int relay_pins[RELAYS] = {49, 48, 47, 46 };
+int relay_pins[RELAYS] = {49, 48, 47, 46};
 Relay *myrelay[RELAYS];
 
 // # PWM same way
 int pwm_pins[PWMS] = {8, 9, 10, 11};
-PWM *mypwm[PWMS];
+CustomPWM *mypwm[PWMS];
 
 // # All tools
-Tool *tools_array[4][6];
+#define TOOLTYPES 4
+#define TOOLVARIANTS 6
+Tool *tools_array[TOOLTYPES][TOOLVARIANTS];
 
 // # Oled
 Oled oledd;
@@ -67,6 +69,7 @@ struct Instruction
     int val1;
     int val2;
     int val3;
+    int val_count;
 };
 enum TypeNumber
 {
@@ -86,6 +89,7 @@ enum InstructionType
     PWM
 };
 
+int global_instructions_counter = 0;
 
 void setup()
 {
@@ -110,13 +114,13 @@ void setup()
             mystepper[i] = new Stepper(stepper_pins[i][0], stepper_pins[i][1], stepper_pins[i][2]);
             break;
         case 4:
-            mystepper[i] = new Stepper(stepper_pins[i][0], stepper_pins[i][1], stepper_pins[i][2], stepper_pins[i][2]);
+            mystepper[i] = new Stepper(stepper_pins[i][0], stepper_pins[i][1], stepper_pins[i][2], stepper_pins[i][3]);
             break;
         default:
             // statements
             break;
         }
-        tools_array[0][i] = mystepper[i];
+        tools_array[STEPPER][i] = mystepper[i];
     }
     // Init servo's
     for (int i = 0; i < SERVOS; i++)
@@ -127,13 +131,13 @@ void setup()
     // Init relay's
     for (int i = 0; i < RELAYS; i++)
     {
-        myrelay[i] = relay_pins[i];
+        myrelay[i] = new Relay(relay_pins[i]);
         tools_array[RELAY][i] = myrelay[i];
     }
     // Init pwm's
     for (int i = 0; i < PWMS; i++)
     {
-        mypwm[i] = pwm_pins[i];
+        mypwm[i] = new CustomPWM(pwm_pins[i]);
         tools_array[PWM][i] = mypwm[i];
     }
     // start oled scherm
@@ -163,8 +167,9 @@ void loop()
         {
             delay(50);
         }
+        resetAll();
         Tasks.setTime(0);
-        Tasks.play();
+        Tasks.pause();
         previousMillis = currentMillis;
         clear_screen = true;
     }
@@ -178,12 +183,27 @@ void loop()
         {
             delay(50);
         }
+        Serial.println(Tasks.size());
         for (int i = 0; i < Tasks.size(); i++)
         {
-            Tasks.erase(i);
+            Serial.println(i);
+            int id = i + 1;
+            Tasks.erase(id);
+            delay(5);
         }
+        Serial.println("HERE");
+        resetAll();
+        Serial.println("HERE2");
         previousMillis = currentMillis;
+        Serial.println("HERE3");
         clear_screen = true;
+        global_instructions_counter = 0;
+        Serial.println("HERE4");
+        delay(1000);
+        oledd.clear();
+        oledd.displayText(0, 0, "Total instructions:");
+        oledd.displayText(0, 1, String(global_instructions_counter));
+        Serial.println("HERE5");
     }
     else if (pauze_button.isPressed())
     {
@@ -261,12 +281,15 @@ void loop()
                     break;
                 case 3:
                     new_instruction.val1 = incoming.toInt();
+                    new_instruction.val_count = 1;
                     break;
                 case 4:
                     new_instruction.val2 = incoming.toInt();
+                    new_instruction.val_count = 2;
                     break;
                 case 5:
                     new_instruction.val3 = incoming.toInt();
+                    new_instruction.val_count = 3;
                     break;
                 default:
                     oledd.clear();
@@ -282,16 +305,34 @@ void loop()
             }
             if (rc == end_char)
             {
-                Serial.flush();
-                break;
+                if (new_instruction.start >= 0 && new_instruction.tool != NULL && new_instruction.type != NULL)
+                {
+                    parseInstruction(new_instruction);
+                }
+                else if (new_instruction.start < 0 && new_instruction.tool != NULL && new_instruction.type != NULL)
+                {
+                    runInstruction(new_instruction);
+                }
+
+                new_instruction = {};
+                instruction_counter = 0;
             }
         }
-
-        parseInstruction(new_instruction, instruction_counter);
-        instruction_counter = 0;
     }
     //    update tasks
     Tasks.update();
+}
+
+void resetAll()
+{
+    for (size_t i = 0; i < TOOLTYPES; i++)
+    {
+        for (size_t j = 0; j < TOOLVARIANTS; j++)
+        {
+            if (tools_array[i][j] != NULL)
+                tools_array[i][j]->reset();
+        }
+    }
 }
 
 int ConvertType(String input)
@@ -326,63 +367,62 @@ int ConvertTypeNumber(String input)
         return G;
 }
 
-void parseInstruction(Instruction new_instruction, int instruction_counter)
+void parseInstruction(Instruction new_instruction)
 {
 
     InstructionType instruction_type = ConvertType(new_instruction.tool);
     TypeNumber instruction_type_number = ConvertTypeNumber(String(new_instruction.type));
-    Serial.println("=New instruction===========");
-    Serial.print(new_instruction.tool);
-    Serial.print(",");
-    Serial.print(new_instruction.type);
-    Serial.print(",");
-    Serial.print(new_instruction.start);
-    Serial.print(",");
-    Serial.print(new_instruction.val1);
-    Serial.print(",");
-    Serial.print(new_instruction.val2);
-    Serial.print(",");
-    Serial.println(new_instruction.val3);
-
     // intruction counter gebruiken om te weten hoeveel instructies ik moet parse met de run() functie;
-
-    // tools_array[instruction_type][instruction_type_number]->run();
-    // switch (instruction_type)
-    // {
-    // case STEPPER:
-    //     instruction_tool = "mystepper";
-    //     break;
-    // case SERVO:
-    //     instruction_tool = "myservo";
-    //     break;
-    // case RELAY:
-    //     instruction_tool = "myrelay";
-    //     break;
-    // case PWM:
-    //     instruction_tool = "mypwm";
-    //     break;
-    // default:
-    //     Serial.println("Unknown instruction type");
-    //     Serial.print(instruction_type);
-    //     oledd.clear();
-    //     oledd.displayText(0, 0, "Unkown instruction");
-    //     oledd.displayText(0, 1, "type:" + String(instruction_type));
-    //     previousMillis = millis();
-    //     clear_screen = true;
-    //     return;
-    // }
-    // Serial.println(tools[instruction_type].val1);
-
-    // Tasks.add([new_instruction, instruction_type_number, instruction_tool]
-    //           {
-    //               Serial.print("My PWM ");
-    //               Serial.println(instruction_type_number);
-    //               instruction_tool[instruction_type_number]->parseInstruction(new_instruction.val1);
-    //           })
-    //     ->startOnceAfter(new_instruction.start);
-    // Serial.println(new_instruction.val1);
-    // Serial.println(instruction_type_number);
-    // Serial.println(instruction_tool);
-
+    switch (new_instruction.val_count)
+    {
+    case 1:
+        Tasks.add([new_instruction, instruction_type, instruction_type_number]
+                  { tools_array[instruction_type][instruction_type_number]->run(new_instruction.val1); })
+            ->startOnceAfter(new_instruction.start);
+        break;
+    case 2:
+        Tasks.add([new_instruction, instruction_type, instruction_type_number]
+                  { tools_array[instruction_type][instruction_type_number]->run(new_instruction.val1, new_instruction.val2); })
+            ->startOnceAfter(new_instruction.start);
+        break;
+    case 3:
+        Tasks.add([new_instruction, instruction_type, instruction_type_number]
+                  { tools_array[instruction_type][instruction_type_number]->run(new_instruction.val1, new_instruction.val2, new_instruction.val3); })
+            ->startOnceAfter(new_instruction.start);
+        break;
+    default:
+        Tasks.add([new_instruction, instruction_type, instruction_type_number]
+                  { tools_array[instruction_type][instruction_type_number]->run(); })
+            ->startOnceAfter(new_instruction.start);
+        break;
+    }
+    global_instructions_counter++;
+    oledd.clear();
+    oledd.displayText(0, 0, "Total instructions:");
+    oledd.displayText(0, 1, String(global_instructions_counter));
+    previousMillis = millis();
+    clear_screen = true;
     Tasks.pause();
+}
+
+void runInstruction(Instruction new_instruction)
+{
+    InstructionType instruction_type = ConvertType(new_instruction.tool);
+    TypeNumber instruction_type_number = ConvertTypeNumber(String(new_instruction.type));
+    // intruction counter gebruiken om te weten hoeveel instructies ik moet parse met de run() functie;
+    switch (new_instruction.val_count)
+    {
+    case 1:
+        tools_array[instruction_type][instruction_type_number]->run(new_instruction.val1);
+        break;
+    case 2:
+        tools_array[instruction_type][instruction_type_number]->run(new_instruction.val1, new_instruction.val2);
+        break;
+    case 3:
+        tools_array[instruction_type][instruction_type_number]->run(new_instruction.val1, new_instruction.val2, new_instruction.val3);
+        break;
+    default:
+        tools_array[instruction_type][instruction_type_number]->run();
+        break;
+    }
 }
