@@ -89,8 +89,6 @@ enum InstructionType
     PWM
 };
 
-int global_instructions_counter = 0;
-
 void setup()
 {
     Serial.begin(9600);
@@ -183,27 +181,14 @@ void loop()
         {
             delay(50);
         }
-        Serial.println(Tasks.size());
-        for (int i = 0; i < Tasks.size(); i++)
-        {
-            Serial.println(i);
-            int id = i + 1;
-            Tasks.erase(id);
-            delay(5);
-        }
-        Serial.println("HERE");
+        Tasks.clear();
         resetAll();
-        Serial.println("HERE2");
         previousMillis = currentMillis;
-        Serial.println("HERE3");
         clear_screen = true;
-        global_instructions_counter = 0;
-        Serial.println("HERE4");
         delay(1000);
         oledd.clear();
         oledd.displayText(0, 0, "Total instructions:");
-        oledd.displayText(0, 1, String(global_instructions_counter));
-        Serial.println("HERE5");
+        oledd.displayText(0, 1, String(Tasks.size()));
     }
     else if (pauze_button.isPressed())
     {
@@ -396,10 +381,9 @@ void parseInstruction(Instruction new_instruction)
             ->startOnceAfter(new_instruction.start);
         break;
     }
-    global_instructions_counter++;
     oledd.clear();
     oledd.displayText(0, 0, "Total instructions:");
-    oledd.displayText(0, 1, String(global_instructions_counter));
+    oledd.displayText(0, 1, String(Tasks.size()));
     previousMillis = millis();
     clear_screen = true;
     Tasks.pause();
