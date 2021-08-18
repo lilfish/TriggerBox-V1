@@ -31,13 +31,19 @@ public:
         _display.setTextColor(WHITE);
         _display.setCursor(0, 0);
     }
-    void displayText(int posx, int posy, String text)
+    void displayText(String a = "", String b = "" , String c = "", String d = "")
     {
-        _display.setCursor(posx, posy * 8);
-        _display.println(text);
+        _display.clearDisplay();
+        String test[4] = {a, b, c, d};
+        for (size_t i = 0; i < 4; i++)
+        {
+            _display.setCursor(0, i * 8);
+            _display.println(test[i]);
+        }
         _display.display();
     }
     void clear()
+
     {
         _display.clearDisplay();
         _display.display();
