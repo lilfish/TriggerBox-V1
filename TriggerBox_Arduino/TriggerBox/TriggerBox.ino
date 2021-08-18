@@ -30,7 +30,7 @@ int servo_pins[SERVOS] = {2, 3, 4, 5, 6, 7};
 CustomServo *myservo[SERVOS];
 
 // # Stepper's
-int stepper_pins[STEPPERS][STEPPER_PINS] = {{A15, A14}, {A13, A12}, {A11, A10}, {A9, A8}, {A7, A6}, {A5, A4}};
+int stepper_pins[STEPPERS][STEPPER_PINS] = {{A12, A13, A14, A15}, {A11, A10}, {A9, A8}, {A7, A6}, {A5, A4}};
 Stepper *mystepper[STEPPERS];
 
 // # Relays
@@ -144,8 +144,7 @@ void setup()
 
     // start seriale communicatie
     Serial.println("TriggerBox v1 started");
-    oledd.displayText(0, 0, "TriggerBox v1");
-    oledd.displayText(0, 1, "active");
+    oledd.displayText("TriggerBox v1", "active.");
     previousMillis = millis();
     clear_screen = true;
     Tasks.pause();
@@ -158,9 +157,7 @@ void loop()
     if (restart_button.isPressed())
     {
         Serial.println("Restart button pressed.");
-        oledd.clear();
-        oledd.displayText(0, 0, "Restart button");
-        oledd.displayText(0, 1, "pressed.");
+        oledd.displayText("Restart button", "pressed.");
         while (restart_button.isPressed())
         {
             delay(50);
@@ -174,9 +171,7 @@ void loop()
     else if (reset_button.isPressed())
     {
         Serial.println("Reset button pressed.");
-        oledd.clear();
-        oledd.displayText(0, 0, "Reset button");
-        oledd.displayText(0, 1, "pressed.");
+        oledd.displayText("Reset button", "pressed.");
         while (reset_button.isPressed())
         {
             delay(50);
@@ -186,16 +181,12 @@ void loop()
         previousMillis = currentMillis;
         clear_screen = true;
         delay(1000);
-        oledd.clear();
-        oledd.displayText(0, 0, "Total instructions:");
-        oledd.displayText(0, 1, String(Tasks.size()));
+        oledd.displayText("Total instructions:", String(Tasks.size()));
     }
     else if (pauze_button.isPressed())
     {
         Serial.println("Pauze button pressed.");
-        oledd.clear();
-        oledd.displayText(0, 0, "Pauze button");
-        oledd.displayText(0, 1, "pressed.");
+        oledd.displayText("Pauze button", "pressed.");
         while (pauze_button.isPressed())
         {
             delay(50);
@@ -207,9 +198,7 @@ void loop()
     else if (continue_button.isPressed())
     {
         Serial.println("Continue button pressed.");
-        oledd.clear();
-        oledd.displayText(0, 0, "Continue button");
-        oledd.displayText(0, 1, "pressed.");
+        oledd.displayText("Continue button", "pressed.");
         while (continue_button.isPressed())
         {
             delay(50);
@@ -229,9 +218,8 @@ void loop()
     // Read serial
     if (Serial.available() > 0)
     {
-        oledd.clear();
-        oledd.displayText(0, 0, "Receiving");
-        oledd.displayText(0, 1, "instructions.");
+        oledd.displayText("Receiving", "instructions.");
+
         previousMillis = currentMillis;
         clear_screen = true;
 
@@ -277,10 +265,7 @@ void loop()
                     new_instruction.val_count = 3;
                     break;
                 default:
-                    oledd.clear();
-                    oledd.displayText(0, 0, "Receiving");
-                    oledd.displayText(0, 1, "to many");
-                    oledd.displayText(0, 2, "instructions.");
+                    oledd.displayText("Receiving", "to many.", "instructions.");
                     previousMillis = currentMillis;
                     clear_screen = true;
                     break;
@@ -381,9 +366,7 @@ void parseInstruction(Instruction new_instruction)
             ->startOnceAfter(new_instruction.start);
         break;
     }
-    oledd.clear();
-    oledd.displayText(0, 0, "Total instructions:");
-    oledd.displayText(0, 1, String(Tasks.size()));
+    oledd.displayText("Total instructions:", String(Tasks.size()));
     previousMillis = millis();
     clear_screen = true;
     Tasks.pause();
@@ -409,4 +392,5 @@ void runInstruction(Instruction new_instruction)
         tools_array[instruction_type][instruction_type_number]->run();
         break;
     }
+    oledd.displayText(new_instruction.tool, String(new_instruction.val1), String(new_instruction.val2), String(new_instruction.val3));
 }
