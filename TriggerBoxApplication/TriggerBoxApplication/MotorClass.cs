@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TriggerBoxApplication
 {
-    public class MotorClass
+    public class MotorClass : ToolsClass
     {
         public void stuff()
         {
